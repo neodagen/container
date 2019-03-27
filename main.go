@@ -39,7 +39,7 @@ func child () {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	must(syscall.Chroot("/home/pupu/contfs"))
+	must(syscall.Chroot("/home/dang/containerfs"))
 	must(os.Chdir("/"))
 	must(syscall.Mount("proc", "proc", "proc", 0, ""))
 	must(cmd.Run())
