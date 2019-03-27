@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"syscall"
+	"io/ioutil"
+	"path/filepath"
 )
 
 func main () {
