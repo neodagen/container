@@ -1,0 +1,1 @@
+rsync -axHAWXS --exclude=directory/to/exclude --exclude=directory/to/exclude / directory/target
