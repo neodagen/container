@@ -34,6 +34,8 @@ func run () {
 func child () {
 	fmt.Printf("running %v as PID %d\n", os.Args[2:], os.Getpid())
 
+	cg()
+
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -45,6 +47,17 @@ func child () {
 	must(syscall.Mount("proc", "proc", "proc", 0, ""))
 	must(cmd.Run())
 	must(syscall.Unmount("proc", 0))
+}
+
+func cg() {
+	cgroups := "/sys/fs/cgroup/"
+	pids := filepath.Join(cgroups, "pids")
+
+	must(os.Mkdir(filepath.Join(pids, "dangcgroup"), 0755))
+	must(ioutil.WriteFile(filepath.Join(pids, "dangcgroup/pids.max"), []byte("20"), 0700))
+	//Removes the new cgroup in plact after the container exits
+	must(ioutil.WriteFile(filepath.Join(pids, "dangcgroup/notify_on_release"), []byte("1"), 0700))
+	must(ioutil.WriteFile(filepath.Join(pids, "dangcgroup/cgroup.procs"), []byte(strconv.Itoa(os.Getpid())), 0700))
 }
 
 func must (err error) {
